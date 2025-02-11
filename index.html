@@ -1,0 +1,155 @@
+<table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Tool Name</th>
+            <th>Purpose</th>
+            <th>Required Input Parameters</th>
+            <th>Output Validation Rules</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><b>Gmail Search</b> (<code>gmail_search</code>)</td>
+            <td>Search for emails in the Gmail inbox.</td>
+            <td>
+                ✅ <b>query</b> (string, optional) – Search terms for email content.<br>
+                ✅ <b>message_to</b> (string, optional) – Filter by recipient email (comma-separated).<br>
+                ✅ <b>message_from</b> (string, optional) – Filter by sender email (comma-separated).
+            </td>
+            <td>
+                ✅ <b>Message ID (<code>url</code>) must be valid Gmail ID</b> (<code>^[a-f0-9]+$</code>).<br>
+                ✅ <b>Metadata (<code>message_headers</code>) must contain <code>From</code> & <code>To</code>.</b><br>
+                ✅ <b>Emails must be valid RFC 5322 format.</b><br>
+                ✅ <b><code>snippets</code> must not be empty.</b><br>
+                ✅ <b><code>can_open: true</code> must be present.</b>
+            </td>
+        </tr>
+        <tr>
+            <td><b>Gmail Draft Create</b> (<code>gmail_draft_create</code>)</td>
+            <td>Creates a draft email but does not send it.</td>
+            <td>
+                ✅ <b>message_to</b> (string, required) – Recipient’s email(s), comma-separated.<br>
+                ✅ <b>message_from</b> (string, required) – Sender email.<br>
+                ✅ <b>message_subject</b> (string, required) – Email subject.<br>
+                ✅ <b>message_body</b> (string, required) – Email content.
+            </td>
+            <td>
+                ✅ <b><code>message_id</code> must be a valid unique draft identifier.</b><br>
+                ✅ <b><code>message_content</code> must be valid escaped JSON.</b><br>
+                ✅ <b><code>"labelIds"</code> must contain <code>"DRAFT"</code>.</b><br>
+                ✅ <b>Emails must follow RFC 5322 format.</b><br>
+                ✅ <b>Subject and body cannot be empty.</b>
+            </td>
+        </tr>
+        <tr>
+            <td><b>Google Calendar Search</b> (<code>google_calendar_search</code>)</td>
+            <td>Search for events in Google Calendar.</td>
+            <td>
+                ✅ <b>query</b> (string, optional) – Search terms for event title/description.<br>
+                ✅ <b>start</b> (RFC3339 datetime, optional) – Event start time.<br>
+                ✅ <b>end</b> (RFC3339 datetime, optional) – Event end time.<br>
+                ✅ <b>calendar</b> (string, optional) – "<code>primary</code>" or email for a shared calendar.
+            </td>
+            <td>
+                ✅ <b>Each event must contain</b>: <code>status</code>, <code>summary</code>, <code>start.dateTime</code>, <code>end.dateTime</code>, <code>creator.email</code>, <code>organizer.email</code>.<br>
+                ✅ <b>Start & end time must be valid RFC3339 format.</b><br>
+                ✅ <b>Emails must be valid RFC 5322 format.</b><br>
+                ✅ <b>Attendee <code>responseStatus</code> must be valid.</b>
+            </td>
+        </tr>
+        <tr>
+            <td><b>Google Calendar Schedule Event</b> (<code>google_calendar_schedule_event</code>)</td>
+            <td>Schedules an event in Google Calendar.</td>
+            <td>
+                ✅ <b>event_title</b> (string, required) – Title of the event.<br>
+                ✅ <b>start</b> (RFC3339 without timezone offset, required) – Start time.<br>
+                ✅ <b>end</b> (RFC3339 without timezone offset, required) – End time.<br>
+                ✅ <b>attendees_emails</b> (string, required) – Comma-separated list of attendee emails.<br>
+                ✅ <b>description</b> (string, optional) – Event description.
+            </td>
+            <td>
+                ✅ <b>Event timestamps must follow RFC3339 format.</b><br>
+                ✅ <b>Attendee emails must be valid RFC 5322 format.</b><br>
+                ✅ <b><code>status</code> must be <code>"confirmed"</code>.</b><br>
+                ✅ <b><code>hangoutLink</code> must be a valid URL (if present).</b>
+            </td>
+        </tr>
+        <tr>
+            <td><b>Google Drive Search</b> (<code>google_drive_search</code>)</td>
+            <td>Search for files in Google Drive.</td>
+            <td>
+                ✅ <b>query</b> (string, required) – Search terms for finding files in Google Drive.
+            </td>
+            <td>
+                ✅ <b><code>url</code> must be a valid Google Drive file ID</b> (<code>^[a-zA-Z0-9_-]+$</code>).<br>
+                ✅ <b>File <code>title</code> must be a non-empty string.</b><br>
+                ✅ <b><code>can_open: true</code> must always be present.</b><br>
+                ✅ <b><code>snippets</code> must always be empty (<code>[]</code>).</b>
+            </td>
+        </tr>
+        <tr>
+            <td><b>Open Search Results</b> (<code>open_search_results</code>)</td>
+            <td>Opens previously retrieved search results with <code>can_open: true</code>.</td>
+            <td>
+                ✅ <b>keys</b> (array of strings, required) – Indexes of search results to retrieve full content.
+            </td>
+            <td>
+                ✅ <b>Keys must be string-based indexes (<code>"1"</code>, <code>"4"</code>, <code>"7"</code>).</b><br>
+                ✅ <b>Only results where <code>can_open: true</code> can be retrieved.</b><br>
+                ✅ <b>Content (<code>content</code>) must be a non-empty string.</b><br>
+                ✅ <b>If <code>can_open: false</code>, retrieval is invalid.</b>
+            </td>
+        </tr>
+        <tr>
+            <td><b>SharePoint Search</b> (<code>sharepoint_search</code>)</td>
+            <td>Search for content in SharePoint.</td>
+            <td>
+                ✅ <b>query</b> (string, required) – Search terms for locating SharePoint documents.
+            </td>
+            <td>
+                ✅ <b><code>url</code> must be a valid SharePoint document URL.</b><br>
+                ✅ <b>Title (<code>title</code>) must be a non-empty string.</b><br>
+                ✅ <b>Metadata must contain <code>author</code>.</b><br>
+                ✅ <b><code>can_open: false</code> must be enforced.</b>
+            </td>
+        </tr>
+        <tr>
+            <td><b>GitHub Code Search</b> (<code>github_code_search</code>)</td>
+            <td>Search for content in GitHub repositories.</td>
+            <td>
+                ✅ <b>keywords</b> (string, required) – Comma-separated search terms (max **5**).<br>
+                ✅ <b>org</b> (string, required) – GitHub organization.<br>
+                ✅ <b>file_directory</b> (string, optional) – Search within a specific directory.<br>
+                ✅ <b>filename</b> (string, optional) – Search within a specific filename.<br>
+                ✅ <b>repo</b> (string, optional) – Repository name for narrowing search.
+            </td>
+            <td>
+                ✅ <b><code>url</code> must be a valid GitHub file URL.</b><br>
+                ✅ <b><code>source</code> must contain a valid repo path.</b><br>
+                ✅ <b>Snippets must contain at least one code fragment.</b><br>
+                ✅ <b><code>can_open: true</code> must be present.</b>
+            </td>
+        </tr>
+        <tr>
+            <td><b>GitHub PR & Issues Search</b> (<code>github_pr_and_issues_search</code>)</td>
+            <td>Search for GitHub pull requests and issues.</td>
+            <td>
+                ✅ <b>search_category</b> (string, required) – "<code>pull-request</code>" or "<code>issue</code>".<br>
+                ✅ <b>org</b> (string, required) – GitHub organization.<br>
+                ✅ <b>status</b> (string, optional) – "<code>open</code>" or "<code>closed</code>".<br>
+                ✅ <b>keywords</b> (string, optional) – Comma-separated keywords (max **5**).<br>
+                ✅ <b>repo</b> (string, optional) – Specific repository.<br>
+                ✅ <b>author</b> (string, optional) – GitHub username for filtering by author.<br>
+                ✅ <b>reviewed_by</b> (string, optional) – PRs reviewed by a specific user.
+            </td>
+            <td>
+                ✅ <b><code>url</code> must match PR/Issue URL pattern:</b><br>
+                • PR: <code>https://github.com/.../pull/123</code><br>
+                • Issue: <code>https://github.com/.../issues/456</code><br>
+                ✅ <b>Source (<code>source</code>) must be API-based.</b><br>
+                ✅ <b>Metadata must contain <code>author</code>.</b><br>
+                ✅ <b><code>can_open: true</code> must be required.</b>
+            </td>
+        </tr>
+    </tbody>
+</table>
